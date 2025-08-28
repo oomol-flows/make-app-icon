@@ -3,11 +3,12 @@ nodes:
     title: "Create App Icon #4"
     inputs_from:
       - handle: input_path
-        value: /oomol-driver/oomol-storage/image/corgi-playing-grass.jpg
+        value: /oomol-driver/oomol-storage/uuuu/image-nWFeCAxUJT9wx2jfYft0dupH2KRVn5
+          (1).png
       - handle: output_dir
         value: /oomol-driver/oomol-storage/uuuu
       - handle: size
-        value: all
+        value: "512"
       - handle: background_color
-        value: "#FFFFFF"
+        value: "#7432E1"
     task: self::create-app-icon

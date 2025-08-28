@@ -89,10 +89,12 @@ export default async function(params: Inputs): Promise<Outputs> {
           .png()
           .toBuffer();
 
-        // 6. Create final result
+        // 6. Create final result - always keep rounded corners transparent
+        let finalImage: sharp.Sharp;
+
         if (background_color) {
-          // Create background and place masked image on top
-          await sharp({
+          // Create background only within the rounded rectangle shape
+          const backgroundMask = await sharp({
             create: {
               width: iconSize,
               height: iconSize,
@@ -101,23 +103,42 @@ export default async function(params: Inputs): Promise<Outputs> {
             }
           })
           .composite([{
-            input: maskedImageBuffer,
-            blend: 'over'
+            input: alphaMask,
+            blend: 'dest-in'  // Apply same mask to background
           }])
-          .png({
-            quality: 100,
-            compressionLevel: 9
+          .png()
+          .toBuffer();
+
+          // Composite the background and the masked image
+          finalImage = sharp({
+            create: {
+              width: iconSize,
+              height: iconSize,
+              channels: 4,
+              background: { r: 0, g: 0, b: 0, alpha: 0 }  // Transparent base
+            }
           })
-          .toFile(outputPath);
+          .composite([
+            {
+              input: backgroundMask,
+              blend: 'over'
+            },
+            {
+              input: maskedImageBuffer,
+              blend: 'over'
+            }
+          ]);
         } else {
-          // Just use the masked image
-          await sharp(maskedImageBuffer)
+          // Just use the masked image with transparent corners
+          finalImage = sharp(maskedImageBuffer);
+        }
+
+        await finalImage
           .png({
             quality: 100,
             compressionLevel: 9
           })
           .toFile(outputPath);
-        }
 
         console.log(`✅ App icon created successfully: ${outputPath}`);
     }
