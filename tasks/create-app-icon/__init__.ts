@@ -10,7 +10,6 @@ type Inputs = {
   background_color: string | null;
 };
 type Outputs = {
-  success: boolean;
   output_dir: string;
 };
 //#endregion
@@ -146,7 +145,6 @@ export default async function(params: Inputs): Promise<Outputs> {
 
     // 6. Return the result.
     return {
-      success: true,
       output_dir: output_dir
     };
 

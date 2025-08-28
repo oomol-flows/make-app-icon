@@ -45,11 +45,6 @@ inputs_def:
     nullable: true
 
 outputs_def:
-  - handle: success
-    description: "Whether the icon was created successfully"
-    json_schema:
-      type: boolean
-
   - handle: output_dir
     description: "Path to the generated icon file"
     json_schema:
@@ -61,3 +56,4 @@ executor:
   options:
     entry: __init__.ts
     spawn: false
+private: true
