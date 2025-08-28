@@ -50,29 +50,49 @@ export default async function(params: Inputs): Promise<Outputs> {
         const outputFilename = `${inputFilename}-${iconSize}.png`;
         const outputPath = path.join(output_dir, outputFilename);
 
-        // 3. Define the rounded rectangle shape for the mask using SVG.
-        const cornerRadius = Math.round(iconSize * 0.2237);
-        const svgMask = `
-          <svg viewBox="0 0 ${iconSize} ${iconSize}" xmlns="http://www.w3.org/2000/svg">
-            <rect x="0" y="0" width="${iconSize}" height="${iconSize}" rx="${cornerRadius}" ry="${cornerRadius}" fill="white"/>
-          </svg>
-        `;
-
-        // 4. Create a PNG buffer from the SVG mask.
-        const maskBuffer = await sharp(Buffer.from(svgMask))
-          .png()
-          .toBuffer();
-
-        // 5. Process the input image: resize, apply the mask, and save as PNG.
-        let image = sharp(input_path)
+        // 3. Process and resize the input image first
+        const resizedImageBuffer = await sharp(input_path)
           .resize(iconSize, iconSize, {
             fit: 'cover',
             position: 'center'
-          });
+          })
+          .png()
+          .toBuffer();
 
-        // If a background color is provided, composite the image over a colored background.
+        // 4. Create alpha mask for rounded corners 
+        const cornerRadius = Math.round(iconSize * 0.2237);
+        
+        // Create alpha mask - transparent background, opaque rounded rectangle
+        const alphaMask = await sharp({
+          create: {
+            width: iconSize,
+            height: iconSize,
+            channels: 4,
+            background: { r: 0, g: 0, b: 0, alpha: 0 }  // Transparent background
+          }
+        })
+        .composite([{
+          input: Buffer.from(`<svg width="${iconSize}" height="${iconSize}">
+            <rect width="${iconSize}" height="${iconSize}" rx="${cornerRadius}" fill="white" fill-opacity="1"/>
+          </svg>`),
+          blend: 'over'
+        }])
+        .png()
+        .toBuffer();
+
+        // 5. Apply mask to the resized image to create rounded corners
+        const maskedImageBuffer = await sharp(resizedImageBuffer)
+          .composite([{
+            input: alphaMask,
+            blend: 'dest-in'
+          }])
+          .png()
+          .toBuffer();
+
+        // 6. Create final result
         if (background_color) {
-          image = sharp({
+          // Create background and place masked image on top
+          await sharp({
             create: {
               width: iconSize,
               height: iconSize,
@@ -80,25 +100,24 @@ export default async function(params: Inputs): Promise<Outputs> {
               background: background_color
             }
           })
-          .composite([
-            {
-              input: await image.toBuffer(),
-              blend: 'over'
-            }
-          ]);
-        }
-
-        await image.composite([
-            {
-              input: maskBuffer,
-              blend: 'dest-in' // Use 'dest-in' to keep only the parts of the image covered by the mask.
-            }
-          ])
+          .composite([{
+            input: maskedImageBuffer,
+            blend: 'over'
+          }])
           .png({
             quality: 100,
             compressionLevel: 9
           })
           .toFile(outputPath);
+        } else {
+          // Just use the masked image
+          await sharp(maskedImageBuffer)
+          .png({
+            quality: 100,
+            compressionLevel: 9
+          })
+          .toFile(outputPath);
+        }
 
         console.log(`✅ App icon created successfully: ${outputPath}`);
     }
