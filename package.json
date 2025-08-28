@@ -1,0 +1,7 @@
+{
+  "private": true,
+  "dependencies": {
+    "@types/sharp": "^0.31.1",
+    "sharp": "^0.34.3"
+  }
+}

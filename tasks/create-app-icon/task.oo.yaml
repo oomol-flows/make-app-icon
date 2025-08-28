@@ -1,0 +1,63 @@
+title: "Create App Icon"
+description: "Generate Apple-style rounded rectangle app icon from input image"
+icon: ":carbon:image-search:"
+
+inputs_def:
+  - handle: input_path
+    description: "Input image file path"
+    json_schema:
+      type: string
+      ui:widget: file
+    nullable: false
+
+  - handle: output_dir
+    description: "Output icon file path"
+    json_schema:
+      type: string
+      ui:widget: dir
+    nullable: false
+
+  - handle: size
+    description: "Icon size in pixels (default: 1024)"
+    json_schema:
+      enum:
+        - "1024"
+        - "512"
+        - "256"
+        - "128"
+        - all
+      ui:options:
+        labels:
+          - 1024 X 1024
+          - 512 X 512
+          - 256 X 256
+          - 128 X 128
+          - All
+    value: all
+    nullable: false
+  - handle: background_color
+    json_schema:
+      type: string
+      ui:widget: color
+      ui:options:
+        colorType: HEX
+    value: "#FFFFFF"
+    nullable: true
+
+outputs_def:
+  - handle: success
+    description: "Whether the icon was created successfully"
+    json_schema:
+      type: boolean
+
+  - handle: output_dir
+    description: "Path to the generated icon file"
+    json_schema:
+      type: string
+      ui:widget: dir
+
+executor:
+  name: nodejs
+  options:
+    entry: __init__.ts
+    spawn: false
