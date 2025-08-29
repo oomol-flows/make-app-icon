@@ -90,5 +90,5 @@ outputs_from:
     from_node:
       - node_id: tiny-pngs#1
         output_handle: destination_files
-title: Mark Apple Like Icon
+title: Make App Icon
 description: Enter a picture and output an icon similar to Apple APP
