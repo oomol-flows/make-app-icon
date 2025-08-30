@@ -20,18 +20,18 @@ nodes:
         from_flow:
           - input_handle: background_color
     task: self::create-app-icon
-  - node_id: tiny-pngs#1
-    title: "Tiny PNGS #1"
+  - node_id: images-compression#1
+    title: "Images Compression #1"
     inputs_from:
       - handle: folder
         from_node:
           - node_id: create-app-icon#4
             output_handle: output_dir
-      - handle: save_address
+      - handle: destination_folder
         value: null
         from_flow:
-          []
-    subflow: tiny-png::tiny-pngs
+          - input_handle: output_dir
+    subflow: tiny-png::images-compression
 inputs_def:
   - handle: input_path
     description: Input image file path
@@ -88,7 +88,7 @@ outputs_def:
 outputs_from:
   - handle: destination_files
     from_node:
-      - node_id: tiny-pngs#1
-        output_handle: destination_files
+      - node_id: images-compression#1
+        output_handle: array
 title: Make App Icon
 description: Enter a picture and output an icon similar to Apple APP

@@ -1,2 +1,11 @@
 nodes:
-  []
+  - node_id: make-app-icon#1
+    title: "Make App Icon #1"
+    inputs_from:
+      - handle: input_path
+      - handle: output_dir
+      - handle: size
+        value: "512"
+      - handle: background_color
+        value: null
+    subflow: self::make-app-icon
