@@ -1,11 +1,13 @@
 nodes:
-  - node_id: make-app-icon#1
-    title: "Make App Icon #1"
+  - node_id: create-app-icon#1
+    title: "Create App Icon #1"
     inputs_from:
       - handle: input_path
+        value: /oomol-driver/oomol-storage/image/da01c73d-88cb-48c5-8e00-20c819858f4a.png
       - handle: output_dir
+        value: /oomol-driver/oomol-storage/image
       - handle: size
-        value: "512"
+        value: "256"
       - handle: background_color
-        value: null
-    subflow: self::make-app-icon
+        value: "#FFFFFF"
+    task: self::make-app-icon

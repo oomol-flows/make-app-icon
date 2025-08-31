@@ -1,4 +1,4 @@
-version: 0.0.4
+version: 0.0.5
 scripts:
   bootstrap: |
     npm install
@@ -8,6 +8,6 @@ name: make-app-icon
 description: make app icon
 displayName: Make App Icon
 repository: https://github.com/oomol-flows/make-app-icon
-releaseNotes: update
+releaseNotes: "update "
 dependencies:
-  tiny-png: 0.1.6
+  {}

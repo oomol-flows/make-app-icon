@@ -1,4 +1,4 @@
-title: "Create App Icon"
+title: "Make App Icon"
 description: "Generate Apple-style rounded rectangle app icon from input image"
 icon: ":carbon:image-search:"
 
@@ -33,7 +33,7 @@ inputs_def:
           - 256 X 256
           - 128 X 128
           - All
-    value: all
+    value: "256"
     nullable: false
   - handle: background_color
     json_schema:
@@ -56,4 +56,4 @@ executor:
   options:
     entry: __init__.ts
     spawn: false
-private: true
+private: false
